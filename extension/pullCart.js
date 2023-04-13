@@ -1,3 +1,5 @@
+
+
 var superbasketText = document.createElement("h3");
 superbasketText.innerText = "Analyse your basket with"
 
@@ -22,6 +24,20 @@ var cartButton = document.querySelector("#header-view-cart-button");
 
 cartButton.addEventListener('click', fetchCart);
 
+
+function generateID(length) {
+    var id = "";
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    let i = 0;
+    while (i < length) {
+        id += characters.charAt(Math.floor(Math.random() * characters.length));
+        i += 1;
+    }
+
+    return id;
+}
+
 async function fetchCart() {
     fetch("https://www.woolworths.com.au/apis/ui/Trolley")
     .then((response) => {
@@ -33,5 +49,34 @@ async function fetchCart() {
     })
     .then((body) => {
         console.log(body);
+        var id = generateID(12);
+
+        superbasketButton.href = "http://localhost:3000?id=" + id;
+
+        var data = JSON.stringify({
+            "collection": "baskets",
+            "database": "superbasket",
+            "dataSource": "Superbasket",
+            "projection": {
+                "_id": id,
+                "basket": body
+            }
+        });
+
+        fetch('https://ap-southeast-2.aws.data.mongodb-api.com/app/data-cilwn/endpoint/data/v1/action/findOne', {
+            method: "POST",
+            body: data,
+            headers: {
+                "Content-type": 'application/json',
+                'Access-Control-Request-Headers': '*',
+                'api-key': 'qVgwbVQsXdqP2sWaWaqs5Ax1e0NkiHT52KS5Nf50VI0fdHFgUSHa1iDijL5TTdno',
+            }
+        })
+        .then((response) => {
+            console.log(response);
+        })
+        .catch((err) => {
+            console.error(err);
+        })
     })
 }
