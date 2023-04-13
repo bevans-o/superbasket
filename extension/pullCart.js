@@ -5,7 +5,7 @@ superbasketText.innerText = "Analyse your basket with"
 
 var superbasketIcon = document.createElement("svg");
 
-var superbasketButton = document.createElement("button");
+var superbasketButton = document.createElement("a");
 superbasketButton.classList.add("superbasket-button");
 superbasketButton.appendChild(superbasketText);
 superbasketButton.appendChild(superbasketIcon);
@@ -53,6 +53,7 @@ async function fetchCart() {
 
         superbasketButton.href = "http://localhost:3000?id=" + id;
 
+        /*
         var data = JSON.stringify({
             "collection": "baskets",
             "database": "superbasket",
@@ -78,5 +79,6 @@ async function fetchCart() {
         .catch((err) => {
             console.error(err);
         })
+        */
     })
 }

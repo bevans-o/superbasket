@@ -33,6 +33,7 @@
 
 .superbasket-button:hover {
     filter: brightness(1.1);
+    text-decoration: none !important;
 }
 
 .superbasket-button h3 {
