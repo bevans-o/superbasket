@@ -6,6 +6,7 @@
 
   "content_scripts": [{
     "matches": ["https://www.woolworths.com.au/*"],
-    "js": ["pullCart.js"]
+    "js": ["pullCart.js"],
+    "css": ["injected.css"]
   }]
 }
