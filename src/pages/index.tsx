@@ -6,8 +6,6 @@ import { processCart } from '@/scripts/cart.js'
 export default function Home() {
   const [data, setData] = useState({});
 
-  
-
   useEffect(() => {
     var url = new URL(window.location.toLocaleString());
     var id = url.searchParams.get("id");
@@ -17,11 +15,18 @@ export default function Home() {
       return response.json();
     })
     .then((body) => {
-      console.log(body);
+      var cartReceived = body[Object.keys(body)[0]]
+      console.log(cartReceived);
+      
+      var basket = processCart(cartReceived);
+      setData(basket);
+
     })
     .catch((error) => {
       console.error(error);
     })
+
+
 
   }, [])
 
