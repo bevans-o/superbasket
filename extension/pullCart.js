@@ -54,13 +54,6 @@ async function fetchCart() {
         // generate random id to identify basket
         var id = generateID(12);
 
-        
-        // post cart to database
-        var data = JSON.stringify({
-          "id": id,
-          "basket": body  
-        });
-
         fetch("https://superbasket-55e27-default-rtdb.asia-southeast1.firebasedatabase.app/" + id + ".json", {
           method: "POST",
           mode: "cors", // no-cors, *cors, same-origin
@@ -72,7 +65,7 @@ async function fetchCart() {
           },
           redirect: "follow", // manual, *follow, error
           referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-          body: data, // body data type must match "Content-Type" header
+          body: JSON.stringify(body), // body data type must match "Content-Type" header
         })
         .then((response) => {
           console.log(response);
@@ -82,6 +75,6 @@ async function fetchCart() {
         })
 
         // open superbasket
-        superbasketButton.href = "https://localhost:3000/?id=" + id;
+        superbasketButton.href = "https://superbasket.vercel.app/?id=" + id;
     })
 }

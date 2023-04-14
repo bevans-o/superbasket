@@ -14,8 +14,9 @@ export default function Home() {
 
     fetch("https://superbasket-55e27-default-rtdb.asia-southeast1.firebasedatabase.app/" + id + ".json")
     .then((response) => {
-      var body = response.json();
-
+      return response.json();
+    })
+    .then((body) => {
       console.log(body);
     })
     .catch((error) => {
