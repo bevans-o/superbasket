@@ -77,7 +77,7 @@ async function fetchCart() {
         .then((response) => {
           console.log(response);
         })
-        .error((error) => {
+        .catch((error) => {
           console.error(error);
         })
 
