@@ -288,15 +288,22 @@ h2 {
   box-shadow: inset 0px 0px 0px 1px var(--primary-colour);
 }
 
+
+
+
+
+
 .item {
   overflow: hidden;
+  position: relative;
   display: grid;
-  grid-template-areas: "selected image name     name  rating"
-                       "selected image quantity price rating";
-  grid-template-columns: 1rem 5rem 1fr 1fr 1rem;
+  grid-template-areas: "image name     name"
+                       "image quantity price";
+  grid-template-columns: 5rem 1fr 1fr;
   grid-template-rows: 50% 50%;
   column-gap: 1rem;
-  padding: 0;
+  padding: 0.5rem 1.5rem;
+
 }
 
 .item__image {
@@ -315,8 +322,14 @@ h2 {
 }
 
 .item__selected {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1rem;
+  height: 100%;
   background: var(--gradient-accent);
   grid-area: selected;
+  height: calc(100% + 2rem);
 }
 
 @media screen and (max-width: 1000px) {
