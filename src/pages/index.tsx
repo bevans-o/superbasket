@@ -9,7 +9,16 @@ export default function Home() {
   
 
   useEffect(() => {
-    //window.open("https://www.woolworths.com.au/apis/ui/Trolley", '_blank')?.focus();
+    var url = new URL(window.location.toLocaleString());
+    var id = url.searchParams.get("id");
+
+    fetch("https://superbasket-55e27-default-rtdb.asia-southeast1.firebasedatabase.app/" + id + ".json")
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.error(error);
+    })
 
   }, [])
 

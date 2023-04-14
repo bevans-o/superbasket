@@ -60,21 +60,26 @@ async function fetchCart() {
           "id": id,
           "basket": body  
         });
-        
-        var xhr = new XMLHttpRequest();
-        xhr.withCredentials = false;
-        
-        xhr.addEventListener("readystatechange", function () {
-          if (this.readyState === 4) {
-            console.log(this.responseText);
-          }
-        });
-        
-        xhr.open("POST", "https://superbasket-55e27-default-rtdb.asia-southeast1.firebasedatabase.app/baskets.json");
-        xhr.setRequestHeader("content-type", "application/json");
-        xhr.setRequestHeader("cache-control", "no-cache");
-        
-        xhr.send(data);
+
+        fetch("https://superbasket-55e27-default-rtdb.asia-southeast1.firebasedatabase.app/" + id + ".json", {
+          method: "POST",
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "omit", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: data, // body data type must match "Content-Type" header
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .error((error) => {
+          console.error(error);
+        })
 
         // open superbasket
         superbasketButton.href = "https://superbasket.vercel.app/?id=" + id;
