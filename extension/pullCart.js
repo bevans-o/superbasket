@@ -116,6 +116,6 @@ async function fetchCart() {
 
 
         // open superbasket
-        superbasketButton.href = "http://localhost:3000?id=" + id;
+        superbasketButton.href = "https://superbasket.vercel.app/?id=" + id;
     })
 }
