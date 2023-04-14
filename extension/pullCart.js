@@ -1,33 +1,3 @@
-/*
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://bevans:Z7sj81PUjc2p1yhq@superbasket.zi6vrbq.mongodb.net/?retryWrites=true&w=majority";
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-run().catch(console.dir);
-
-*/
-
-
-
-
 // create superbasket elements
 var superbasketText = document.createElement("h3");
 var superbasketIcon = document.createElement("svg");
@@ -87,33 +57,24 @@ async function fetchCart() {
         
         // post cart to database
         var data = JSON.stringify({
-            /*
-            "collection": "baskets",
-            "database": "superbasket",
-            "dataSource": "Superbasket",
-            "projection": {*/
-                "_id": id,
-                "basket": body
-            
+          "id": id,
+          "basket": body  
         });
-
-        fetch('https://ap-southeast-2.aws.data.mongodb-api.com/app/superbasket-ollel/endpoint/data/v1', {
-            method: "POST",
-            body: data,
-            headers: {
-                "Content-type": 'application/json',
-                'Access-Control-Request-Headers': '*',
-                'api-key': 'qVgwbVQsXdqP2sWaWaqs5Ax1e0NkiHT52KS5Nf50VI0fdHFgUSHa1iDijL5TTdno',
-            }
-        })
-        .then((response) => {
-            console.log(response);
-        })
-        .catch((err) => {
-            console.error(err.body);
-        })
-
-
+        
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = false;
+        
+        xhr.addEventListener("readystatechange", function () {
+          if (this.readyState === 4) {
+            console.log(this.responseText);
+          }
+        });
+        
+        xhr.open("POST", "https://superbasket-55e27-default-rtdb.asia-southeast1.firebasedatabase.app/baskets.json");
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.setRequestHeader("cache-control", "no-cache");
+        
+        xhr.send(data);
 
         // open superbasket
         superbasketButton.href = "https://superbasket.vercel.app/?id=" + id;
