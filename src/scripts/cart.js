@@ -1,8 +1,10 @@
+// function to determine if basket item is a food item
 function isFood(department, category) {
   const departmentList = [
     "FRUIT AND VEG",
-    "FRESH CONVENIENT",
+    "FRESH CONVENIENCE",
     "PROPRIETARY BAKERY",
+    "BAKEHOUSE"
   ];
   const categoryList = [
     "VEG",
@@ -16,7 +18,9 @@ function isFood(department, category) {
     "HEALTH FOODS",
     "BISCUITS",
     "CONDIMENTS",
-    "CONFECTIONERY"
+    "CONFECTIONERY",
+    "FREEZER - POULTRY",
+    "ICE CREAM"
   ];
 
   let foodDept = departmentList.includes(department);
@@ -25,18 +29,48 @@ function isFood(department, category) {
   return foodDept || foodCat;
 }
 
+// pulls the relevant nutritional information from the json file
+function getMacros(nutritionalInformation, quantity){
+
+  // index of each macro.
+  const kj = 759;
+  const carbs = 705;
+  const sugar = 909;
+  const protein = 878;
+  const fat = 764;
+  const satfat = 253;
+  const sodium = 491; 
+  const macroOrder = [carbs, kj, satfat, fat, protein, sodium, sugar];
+
+  var returnInfo = []
+
+  for(var macro of nutritionalInformation){
+    for (var id of macroOrder){
+      if (macro["Id"] == id){
+        console.log(macro["Id"] + " " + " " + id + " " + macro["Value"])
+        returnInfo.push(macro["Value"]);
+        break;
+      }
+    }
+  }
+
+  console.log(returnInfo);
+  
+  return returnInfo;
+
+}
+
 export function processCart(rawBasket) {
   var nonFoodBasket = {};
   nonFoodBasket.lineItems = [];
   var foodBasket = {};
   foodBasket.lineItems = [];
-  rawBasket.lineItems = [];
+  //rawBasket.lineItems = [];
 
   rawBasket.AvailableItems.forEach((item) => {
     if (isFood(item.SapCategories.SapDepartmentName, item.SapCategories.SapCategoryName)){
       // adds food items to food item list
-      var nutInfo = item.AdditionalAttributes.nutritionalinformation;
-      console.log(nutInfo);
+      var nutInfo = JSON.parse(item.AdditionalAttributes.nutritionalinformation);
       console.log(item.Name + " is food");
       foodBasket.lineItems.push(
         new LineItem(
@@ -49,7 +83,7 @@ export function processCart(rawBasket) {
           item.Quantity,
           item.LargeImageFile,
           item.PackageSize,
-          item.AdditionalAttributes.nutritionalinformation
+          new NutritionalInformation(getMacros(nutInfo["Attributes"], item.Quantity)),
 
         )
       );
@@ -76,19 +110,29 @@ export function processCart(rawBasket) {
 }
 
 export class LineItem {
-  constructor(name, price, deptName, catName, starrating, allergencontains, nutInfo, quantity, image, packagesize) {
+  constructor(name, price, deptName, catName, starrating, allergencontains, quantity, image, packagesize, nutInfo) {
     this.name = name;
     this.price = price;
     this.deptName = deptName;
     this.catName = catName;
     this.starrating = starrating;
     this.allergencontains = allergencontains;
-    this.nutInfo = nutInfo;
     this.quantity = quantity;
     this.image = image;
-    this.included = true;
     this.packagesize = packagesize;
+    this.included = true;
+    this.nutInfo = nutInfo;
   }
 }
 
-export class NutritionalInformation {}
+export class NutritionalInformation {
+  constructor([carb, kj, satfat, fat, protein, sodium, sugar]){
+    this.carb = carb;
+    this.kj = kj;
+    this.fat = fat;
+    this.protein = protein;
+    this.satfat = satfat;
+    this.sodium = sodium;
+    this.sugar = sugar;
+  }
+}
