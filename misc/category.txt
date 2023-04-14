@@ -23,3 +23,12 @@ TOILETRIES
 HEALTH CARE
 PAPER GOODS
 CLEANSING
+
+value id:
+kj per 100g: 759
+carbs per 100g: 705
+    sugar per 100g: 909
+protein per 100g: 878    
+tot fat per 100g: 764
+    sat fat per 100g: 253
+sodium per 100g: 491
