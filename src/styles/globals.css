@@ -54,9 +54,9 @@ blocks
 
   --background-main: #FFFFFF;
 
-  --panel-main: #f5f5f5;
+  --panel-main: #f1f1f1;
   --panel-highlight: #FFFFFF;
-  --panel-shade: #F1F1F1;
+  --panel-shade: #E9E9E9;
   --panel-shade-dark: #D1D1D1;
 
   --primary-colour: #49B554;
@@ -71,7 +71,8 @@ blocks
   --text-subtle: #848484;
   --text-body: #404040;
 
-  --panel-shadow: 0px 0px 16px rgba(0, 0, 0, 0.1);
+  --panel-shadow: 0px 0px 25px rgba(0, 0, 0, 0.15);
+  --inset-shadow: inset -2px -2px 0px var(--panel-shade);
 }
 
 * {
@@ -83,6 +84,15 @@ blocks
 html {
   background: var(--background-main);
   color: var(--text-body);
+  font-family: var(--font-family);
+}
+
+html, body, #__next, main {
+  height: 100%;
+  width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6, p {
   font-family: var(--font-family);
 }
 
@@ -99,9 +109,55 @@ h2 {
   gap: 0.5rem;
 }
 
+.column-list--large {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
 
 
 
+.main {
+  display: grid;
+  grid-template-areas: 
+    "header"
+    "body";
+
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  width: 100%;
+}
+
+.header {
+  grid-area: header;
+  padding: 2rem;
+  background: var(--panel-main);
+  border-bottom: 1px solid var(--panel-highlight);
+  box-shadow: var(--inset-shadow);
+  height: fit-content;
+
+  z-index: 1;
+}
+
+.body {
+  grid-area: body;
+  padding: 2rem;
+  background: var(--panel-main);
+  place-self: stretch;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+
+  transition: all 200ms ease;
+}
+
+.panel {
+  border: 1px solid var(--panel-highlight);
+  border-radius: 6px;
+  box-shadow: var(--inset-shadow);
+  padding: 1rem;
+}
 
 
 
@@ -112,6 +168,7 @@ h2 {
   left: 0;
   top: 0;
   bottom: 0;
+  z-index: 5;
   
   display: flex;
   flex-direction: column;
@@ -136,22 +193,50 @@ h2 {
 .sidebar__toggle {
   position: absolute;
   height: 3rem;
-  width: 3rem;
+  width: auto;
   bottom: 3rem;
   left: calc(100% - 1px);
-  padding: 0;
+  padding: 0 0 0 0.5rem;
   padding-right: 0.5rem;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+
+  color: var(--text-main);
+  font-size: 1rem;
 
   background: var(--panel-main);
   border: 1px solid var(--panel-highlight);
   border-width: 1px 1px 1px 0 !important;
   border-radius: 0 99999px 99999px 0;
+  box-shadow: 5px 0px 10px rgba(0, 0, 0, 0.1);
 
   cursor: pointer;
+
+  transition: all 200ms ease;
+}
+
+.sidebar__toggle p {
+  padding-bottom: 2px;
+
+  transition: color 200ms ease;
+}
+
+.sidebar--open .sidebar__toggle p {
+  display: none;
+}
+
+.sidebar--closed .sidebar__toggle {
+  background: var(--primary-colour);
+  border: 1px solid var(--highlight-main);
+  padding: 0 1rem 0 1.5rem;
 }
 
 .sidebar__toggle svg {
-  fill: var(--text-body);
+  fill: var(--text-main);
 
   transition: transform 300ms ease, scale 200ms ease;
 }
@@ -161,6 +246,7 @@ h2 {
 }
 
 .sidebar--open .sidebar__toggle svg {
+  fill: var(--text-body);
   transform: rotateZ(180deg);
 }
 
@@ -176,7 +262,7 @@ h2 {
   transform: translateY(-3px);
 }
 
-
+.items h2,
 .filters h2 {
   padding: 0.5rem 0.5rem;
   border-bottom: 1px solid var(--panel-shade-dark);
@@ -200,4 +286,61 @@ h2 {
   color: var(--primary-colour);
   border: 1px solid var(--primary-colour);
   box-shadow: inset 0px 0px 0px 1px var(--primary-colour);
+}
+
+.item {
+  overflow: hidden;
+  display: grid;
+  grid-template-areas: "selected image name     name  rating"
+                       "selected image quantity price rating";
+  grid-template-columns: 1rem 5rem 1fr 1fr 1rem;
+  grid-template-rows: 50% 50%;
+  column-gap: 1rem;
+  padding: 0;
+}
+
+.item__image {
+  height: 5rem;
+  border-radius: 6px;
+  border: 2px solid var(--panel-shade);
+  grid-area: image;
+}
+
+.item__name {
+  grid-area: name;
+}
+
+.item__price {
+  grid-area: price;
+}
+
+.item__selected {
+  background: var(--gradient-accent);
+  grid-area: selected;
+}
+
+@media screen and (max-width: 1000px) {
+  .body {
+    grid-template-columns: auto;
+  }  
+}
+
+
+
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+	width: 0.3rem;
+  background-color: var(--panel-main);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary-colour)
+}
+    
+@supports (scrollbar-color: black white) {
+	* {
+    	scrollbar-color: var(--neutral500) var(--neutral700);
+      scrollbar-width: none;
+    }
 }

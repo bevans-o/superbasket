@@ -47,14 +47,11 @@ function getMacros(nutritionalInformation, quantity){
   for(var macro of nutritionalInformation){
     for (var id of macroOrder){
       if (macro["Id"] == id){
-        console.log(macro["Id"] + " " + " " + id + " " + macro["Value"])
         returnInfo.push(macro["Value"]);
         break;
       }
     }
   }
-
-  console.log(returnInfo);
   
   return returnInfo;
 
@@ -70,7 +67,8 @@ export function processCart(rawBasket) {
   rawBasket.AvailableItems.forEach((item) => {
     if (isFood(item.SapCategories.SapDepartmentName, item.SapCategories.SapCategoryName)){
       // adds food items to food item list
-      var nutInfo = JSON.parse(item.AdditionalAttributes.nutritionalinformation);
+      
+      var nutInfo = item.AdditionalAttributes.nutritionalinformation === undefined ? null : JSON.parse(item.AdditionalAttributes?.nutritionalinformation);
       console.log(item.Name + " is food");
       foodBasket.lineItems.push(
         new LineItem(
@@ -83,7 +81,7 @@ export function processCart(rawBasket) {
           item.Quantity,
           item.LargeImageFile,
           item.PackageSize,
-          new NutritionalInformation(getMacros(nutInfo["Attributes"], item.Quantity)),
+          nutInfo === null ? null : new NutritionalInformation(getMacros(nutInfo["Attributes"], item.Quantity)),
 
         )
       );
@@ -106,7 +104,14 @@ export function processCart(rawBasket) {
   console.log(foodBasket.lineItems);
   console.log(nonFoodBasket.lineItems);
 
-  return [foodBasket, nonFoodBasket];
+  return new Basket(foodBasket.lineItems, nonFoodBasket.lineItems);
+}
+
+export class Basket {
+  constructor(foodItems, nonFoodItems) {
+    this.foodItems = foodItems;
+    this.nonFoodItems = nonFoodItems;
+  }
 }
 
 export class LineItem {

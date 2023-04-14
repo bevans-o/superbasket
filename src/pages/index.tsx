@@ -1,12 +1,13 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
-import { processCart } from '@/scripts/cart.js'
+import { Basket, LineItem, processCart } from '@/scripts/cart.js'
 import Sidebar from '@/components/sidebar';
 import Logo from '@/components/logo';
 import Filter from '@/components/filter';
+import Item from '@/components/item';
 
 export default function Home() {
-  const [basket, setBasket] = useState({});
+  const [basket, setBasket] = useState<Basket>(new Basket([], []));
 
   useEffect(() => {
     // retrieve id from url
@@ -22,7 +23,8 @@ export default function Home() {
       console.log(cartReceived);
       
       // process raw woolworths cart data
-      var basket = processCart(cartReceived);
+      var basket : Basket = processCart(cartReceived);
+      console.log(basket);
       setBasket(basket);
 
     })
@@ -39,7 +41,11 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <main className='main'>
+        <header className="header">
+          <Logo/>
+        </header>
+
         <Sidebar>
           <Logo/>
           <div className='column-list filters'>
@@ -57,8 +63,29 @@ export default function Home() {
           </div>
         </Sidebar>
       
-        <div>
-          {JSON.stringify(basket)}
+        <div id="body" className="body">
+          
+          <div className="column-list--large">
+            <div className="panel items column-list">
+              <h2>Food Items</h2>
+
+              {basket.foodItems.map((item: LineItem, index: number) => (
+                <Item key={index} item={item}/>
+              ))}
+
+            </div>
+
+            <div className="panel items column-list">
+              <h2>Non-Food Items</h2>
+
+              {basket.nonFoodItems.map((item: LineItem, index: number) => (
+                <Item key={index} item={item}/>
+              ))}
+
+            </div>
+          </div>
+          <div className="panel insights"></div>
+          {/*JSON.stringify(basket)*/}
         </div>
         
       </main>
