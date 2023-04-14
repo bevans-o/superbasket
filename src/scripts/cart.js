@@ -94,6 +94,8 @@ export function processCart(rawBasket) {
           item.SalePrice,
           item.SapCategories.SapDepartmentName,
           item.SapCategories.SapCategoryName,
+          null,
+          null,
           item.quantity,
           item.LargeImageFile
         )
