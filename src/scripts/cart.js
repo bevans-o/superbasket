@@ -60,8 +60,14 @@ function getMacros(nutritionalInformation, quantity) {
         if (macro["Value"][0] == "A") {
           // if the value starts with the substring "APPROX."
           var value = parseFloat(macro["Value"].slice(7, end));
+        } else if (macro["Value"][0] == "<") {
+          var value = parseFloat(macro["Value"].slice(1, end));
         } else {
           var value = parseFloat(macro["Value"].slice(0, end));
+        }
+        if (isNaN(value)) {
+          console.log("AAAAAA");
+          value = 0;
         }
         returnInfo.push(value);
         break;
@@ -73,12 +79,11 @@ function getMacros(nutritionalInformation, quantity) {
 }
 
 // returns a NutritionalInfo which has the sums of each individual macro in the cart
-function basketMacroSum(foodItems, activeFilters) {
+export function basketMacroSum(foodItems, activeFilters) {
   // console.log(activeFilters);
   var sum = new NutritionalInformation([0, 0, 0, 0, 0, 0, 0], 0);
   // console.log(foodBasket);
   // console.log("sdkfjslkd;f");
-  console.log(foodItems);
   for (var food of foodItems) {
     var active = false;
     activeFilters.forEach((filter) => {
@@ -90,28 +95,30 @@ function basketMacroSum(foodItems, activeFilters) {
     if (!active) continue;
 
     if (food.nutInfo != null) {
-      console.log("WORKS");
+      const sugar = isNaN(food.nutInfo.sugar) ? "0" : food.nutInfo.sugar;
       sum.carb += food.nutInfo.carb;
       sum.kj += food.nutInfo.kj;
       sum.satfat += food.nutInfo.satfat;
       sum.fat += food.nutInfo.fat;
       sum.protein += food.nutInfo.protein;
       sum.sodium += food.nutInfo.sodium;
-      sum.sugar += food.nutInfo.sugar;
+      sum.sugar += sugar;
     }
   }
-  console.log(sum);
+  console.log(sum.sugar);
   return sum;
 }
 
 function subtractingHealth(macroSum) {
   var minus = 0;
   var ratio = 0;
-  console.log(macroSum.sugar);
+  // console.log("subtracting health");
+  console.log("carb: " + macroSum.carb);
+  console.log("sugar" + macroSum.sugar);
   // ratio = macroSum.sugar / macroSum.carb;
-  // minus = -6 / (2 * ratio - 2.2);
+  minus = -6 / (2 * ratio - 2.2);
 
-  // console.log(ratio);
+  // console.log(minus);
   return minus;
 }
 
@@ -138,8 +145,12 @@ export function overallHealthStar(foodItems, activeFilters) {
     }
     itemCount += Number(food.quantity);
   }
-  return (totalStars / itemCount) * 20;
-  //return (totalStars / itemCount) * 20 - subtractingHealth(macroSum);
+  var final = Math.round(
+    (totalStars / itemCount) * 20 - subtractingHealth(macroSum)
+  );
+
+  console.log(final);
+  return final;
 }
 
 export function processCart(rawBasket) {
