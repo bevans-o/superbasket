@@ -73,10 +73,10 @@ function getMacros(nutritionalInformation, quantity) {
 }
 
 // returns a NutritionalInfo which has the sums of each individual macro in the cart
-function basketMacroSum(foodBasket) {
+function basketMacroSum(foodBasket, activeFilters) {
   var sum = new NutritionalInformation([0, 0, 0, 0, 0, 0, 0], 0);
   for (var food of foodBasket.lineItems) {
-    if (food.nutInfo != null) {
+    if (food.nutInfo != null && activeFilters.includes(food.pies)) {
       sum.carb += food.nutInfo.carb;
       sum.kj += food.nutInfo.kj;
       sum.satfat += food.nutInfo.satfat;
@@ -86,8 +86,20 @@ function basketMacroSum(foodBasket) {
       sum.sugar += food.nutInfo.sugar;
     }
   }
-
   return sum;
+}
+
+function subtractingHealth(foodBasket) {
+  var minus = 0;
+
+  for (var food of foodBasket.lineItems) {
+    if (food.nutInfo != null) {
+      minus = -6 / (2 * (food.nutInfo.sugar / food.nutInfo.carb) - 2.2);
+    }
+  }
+
+  console.log(minus);
+  return minus;
 }
 
 // creates an overall health star rating of the cart
@@ -98,11 +110,11 @@ function overallHealthStar(foodBasket) {
   for (var food of foodBasket.lineItems) {
     if (food.starrating != 0 && food.starrating != null) {
       totalStars += Number(food.quantity) * Number(food.starrating);
-      itemCount += Number(food.quantity);
     }
+    itemCount += Number(food.quantity);
   }
-
-  return totalStars / itemCount;
+  console.log((totalStars / itemCount) * 20);
+  return (totalStars / itemCount) * 20 - subtractingHealth(foodBasket);
 }
 
 export function processCart(rawBasket) {
@@ -125,6 +137,7 @@ export function processCart(rawBasket) {
         item.AdditionalAttributes.nutritionalinformation === undefined
           ? null
           : JSON.parse(item.AdditionalAttributes?.nutritionalinformation);
+      console.log(item.AdditionalAttributes.piesdepartmentnamesjson);
       console.log(item.Name + " is food");
       foodBasket.lineItems.push(
         new LineItem(
@@ -142,7 +155,8 @@ export function processCart(rawBasket) {
                 parseFloat(item.Quantity)
               ),
           item.AdditionalAttributes.healthstarrating,
-          item.AdditionalAttributes.allergencontains
+          item.AdditionalAttributes.allergencontains,
+          item.AdditionalAttributes.piesdepartmentnamesjson
         )
       );
     } else {
@@ -163,7 +177,7 @@ export function processCart(rawBasket) {
 
   console.log(foodBasket.lineItems);
   console.log(nonFoodBasket.lineItems);
-  console.log(basketMacroSum(foodBasket));
+  //console.log(basketMacroSum(foodBasket));
   console.log("avg health star: " + overallHealthStar(foodBasket));
 
   return new Basket(
@@ -192,7 +206,8 @@ export class LineItem {
     packagesize,
     nutInfo,
     starrating,
-    allergencontains
+    allergencontains,
+    pies
   ) {
     this.name = name;
     this.price = price;
@@ -205,6 +220,7 @@ export class LineItem {
     this.nutInfo = nutInfo;
     this.starrating = starrating;
     this.allergencontains = allergencontains;
+    this.pies = pies;
   }
 }
 
