@@ -66,7 +66,7 @@ export default function Home() {
         </Sidebar>
       
         <div id="body" className="body">
-          <BasketPanel total="beep beep beep">
+          <BasketPanel total={basket.totalPrice}>
             <div className="column-list--large">
               <div className="items column-list">
                 <h2>Food Items</h2>

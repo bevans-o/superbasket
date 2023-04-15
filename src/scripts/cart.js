@@ -158,13 +158,18 @@ export function processCart(rawBasket) {
   console.log("avg health star: " + overallHealthStar(foodBasket));
   
 
-  return new Basket(foodBasket.lineItems, nonFoodBasket.lineItems);
+  return new Basket(
+    foodBasket.lineItems, 
+    nonFoodBasket.lineItems,
+    rawBasket.Totals.SubTotal
+    );
 }
 
 export class Basket {
-  constructor(foodItems, nonFoodItems) {
+  constructor(foodItems, nonFoodItems, totalPrice) {
     this.foodItems = foodItems;
     this.nonFoodItems = nonFoodItems;
+    this.totalPrice = "$" + totalPrice;
   }
 }
 
