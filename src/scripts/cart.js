@@ -26,7 +26,8 @@ function isFood(department, category) {
     "PREPARED FOODS",
     "PASTA / RICE",
     "CARBONATED SOFT DRINKS",
-    
+    "CANNED FRUIT / DESSERTS",
+    "ETHNIC / GOURMET FOOD",
   ];
 
   let foodDept = departmentList.includes(department);
