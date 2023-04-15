@@ -8,6 +8,7 @@ import Item from '@/components/item';
 
 export default function Home() {
   const [basket, setBasket] = useState<Basket>(new Basket([], []));
+  const [filters, setFilters] = useState<Array<String>>([]);
 
   useEffect(() => {
     // retrieve id from url
@@ -64,27 +65,37 @@ export default function Home() {
         </Sidebar>
       
         <div id="body" className="body">
-          
-          <div className="column-list--large">
-            <div className="panel items column-list">
-              <h2>Food Items</h2>
+          <div className="panel">
+            <div className="column-list--large">
+              <div className="items column-list">
+                <h2>Food Items</h2>
 
-              {basket.foodItems.map((item: LineItem, index: number) => (
-                <Item key={index} item={item}/>
-              ))}
+                {basket.foodItems.map((item: LineItem, index: number) => {
+                  var active = true;
+                  // if (item.category not in filters... ) active = false;
+                  return (
+                  <Item key={index} item={item} active={active}/>
+                )})}
 
+              </div>
+
+              <div className="items column-list">
+                <h2>Non-Food Items</h2>
+
+                {basket.nonFoodItems.map((item: LineItem, index: number) => {
+                  var active = true;
+                  // if (item.category not in filters... ) active = false;
+                  return (
+                  <Item key={index} item={item} active={active}/>
+                )})}
+
+              </div>
             </div>
 
-            <div className="panel items column-list">
-              <h2>Non-Food Items</h2>
-
-              {basket.nonFoodItems.map((item: LineItem, index: number) => (
-                <Item key={index} item={item}/>
-              ))}
-
-            </div>
+            <div className="panel insights"></div>
           </div>
-          <div className="panel insights"></div>
+          
+          
           {/*JSON.stringify(basket)*/}
         </div>
         

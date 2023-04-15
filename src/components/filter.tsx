@@ -1,17 +1,20 @@
 
-export default function Filter({display, filter}: any) {
+export default function Filter({display, filter, applyFilter}: any) {
 
     return (
         <div className="filter" data-active="true" onClick={(event) => {
-            var filter: HTMLDivElement = event.target as HTMLDivElement;
+            var filterElement: HTMLDivElement = event.target as HTMLDivElement;
 
-            if (filter == null) return;
+            if (filterElement == null) return;
 
-            if (filter.dataset.active == "true") {
-                filter.dataset.active = "false";
+            if (filterElement.dataset.active == "true") {
+                filterElement.dataset.active = "false";
             } else {
-                filter.dataset.active = "true"
+                filterElement.dataset.active = "true"
             }
+
+            if (applyFilter == null) return;
+            applyFilter(filter);
         }}>
             {display}
         </div>
