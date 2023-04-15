@@ -21,6 +21,12 @@ function isFood(department, category) {
     "CONFECTIONERY",
     "FREEZER - POULTRY",
     "ICE CREAM",
+    "HEALTH FOODS",
+    "SNACKS",
+    "PREPARED FOODS",
+    "PASTA / RICE",
+    "CARBONATED SOFT DRINKS",
+    
   ];
 
   let foodDept = departmentList.includes(department);
