@@ -43,11 +43,24 @@ function getMacros(nutritionalInformation, quantity){
   const macroOrder = [carbs, kj, satfat, fat, protein, sodium, sugar];
 
   var returnInfo = []
+  var end;
 
   for(var macro of nutritionalInformation){
     for (var id of macroOrder){
       if (macro["Id"] == id){
-        returnInfo.push(macro["Value"]);
+        // to remove the units at the end.
+        if (id == kj || id == sodium){
+          end = -2;
+        } else{
+          end = -1;
+        }
+        if(macro["Value"][0] == 'A'){
+          // if the value starts with the substring "APPROX."
+          var value = parseFloat(macro["Value"].slice(7, end));
+        } else{
+          var value = parseFloat(macro["Value"].slice(0, end));
+        }
+        returnInfo.push(value);
         break;
       }
     }
@@ -56,6 +69,25 @@ function getMacros(nutritionalInformation, quantity){
   return returnInfo;
 
 }
+
+// returns a NutritionalInfo which has the sums of each individual macro in the cart
+function basketMacroSum(foodBasket){
+  var sum = new NutritionalInformation([0, 0, 0, 0, 0, 0, 0], 0)
+  for (var food of foodBasket.lineItems){
+    sum.carb += food.nutInfo.carb;
+    sum.kj += food.nutInfo.kj;
+    sum.satfat += food.nutInfo.satfat;
+    sum.fat += food.nutInfo.fat;
+    sum.protein += food.nutInfo.protein;
+    sum.sodium += food.nutInfo.sodium;
+    sum.sugar += food.nutInfo.sugar;
+   }
+
+  return sum;
+}
+
+
+// creates an overall health star rating of the cart
 
 export function processCart(rawBasket) {
   var nonFoodBasket = {};
@@ -81,7 +113,7 @@ export function processCart(rawBasket) {
           item.Quantity,
           item.LargeImageFile,
           item.PackageSize,
-          nutInfo === null ? null : new NutritionalInformation(getMacros(nutInfo["Attributes"], item.Quantity)),
+          nutInfo === null ? null : new NutritionalInformation(getMacros(nutInfo["Attributes"]), parseFloat(item.Quantity)),
 
         )
       );
@@ -105,6 +137,7 @@ export function processCart(rawBasket) {
 
   console.log(foodBasket.lineItems);
   console.log(nonFoodBasket.lineItems);
+  console.log(basketMacroSum(foodBasket));
 
   return new Basket(foodBasket.lineItems, nonFoodBasket.lineItems);
 }
@@ -133,13 +166,15 @@ export class LineItem {
 }
 
 export class NutritionalInformation {
-  constructor([carb, kj, satfat, fat, protein, sodium, sugar]){
-    this.carb = carb;
-    this.kj = kj;
-    this.fat = fat;
-    this.protein = protein;
-    this.satfat = satfat;
-    this.sodium = sodium;
-    this.sugar = sugar;
+  constructor([carb, kj, satfat, fat, protein, sodium, sugar], quantity){
+    this.carb = carb*quantity; //g
+    this.kj = kj*quantity; //kj
+    this.fat = fat*quantity; //g
+    this.protein = protein*quantity; //g
+    this.satfat = satfat*quantity; //g
+    this.sodium = sodium*quantity; //mg
+    this.sugar = sugar*quantity; //g
   }
 }
+
+// TODO: create a function that sums up the macros
