@@ -89,24 +89,21 @@ function basketMacroSum(foodBasket, activeFilters) {
   return sum;
 }
 
-function subtractingHealth(foodBasket) {
+function subtractingHealth(macroSum) {
   var minus = 0;
-
-  for (var food of foodBasket.lineItems) {
-    if (food.nutInfo != null) {
-      minus = -6 / (2 * (food.nutInfo.sugar / food.nutInfo.carb) - 2.2);
-    }
-  }
+  var ratio = 0;
+  ratio = macroSum.sugar / macroSum.carb;
+  minus = -6 / (2 * ratio - 2.2);
 
   console.log(minus);
   return minus;
 }
 
 // creates an overall health star rating of the cart
-function overallHealthStar(foodBasket) {
+export function overallHealthStar(foodBasket, activeFilters) {
   var itemCount = 0;
   var totalStars = 0;
-
+  var macroSum = basketMacroSum(foodBasket, activeFilters);
   for (var food of foodBasket.lineItems) {
     if (food.starrating != 0 && food.starrating != null) {
       totalStars += Number(food.quantity) * Number(food.starrating);
@@ -114,7 +111,7 @@ function overallHealthStar(foodBasket) {
     itemCount += Number(food.quantity);
   }
   console.log((totalStars / itemCount) * 20);
-  return (totalStars / itemCount) * 20 - subtractingHealth(foodBasket);
+  return (totalStars / itemCount) * 20 - subtractingHealth(macroSum);
 }
 
 export function processCart(rawBasket) {
@@ -178,7 +175,13 @@ export function processCart(rawBasket) {
   console.log(foodBasket.lineItems);
   console.log(nonFoodBasket.lineItems);
   //console.log(basketMacroSum(foodBasket));
-  console.log("avg health star: " + overallHealthStar(foodBasket));
+  console.log(
+    "avg health star: " +
+      overallHealthStar(
+        foodBasket,
+        basketMacroSum(foodBasket, ["Fruit & Veg", "Bakery", "Pantry"])
+      )
+  );
 
   return new Basket(
     foodBasket.lineItems,
