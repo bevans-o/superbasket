@@ -73,10 +73,24 @@ function getMacros(nutritionalInformation, quantity) {
 }
 
 // returns a NutritionalInfo which has the sums of each individual macro in the cart
-function basketMacroSum(foodBasket, activeFilters) {
+function basketMacroSum(foodItems, activeFilters) {
+  // console.log(activeFilters);
   var sum = new NutritionalInformation([0, 0, 0, 0, 0, 0, 0], 0);
-  for (var food of foodBasket.lineItems) {
-    if (food.nutInfo != null && activeFilters.includes(food.pies)) {
+  // console.log(foodBasket);
+  // console.log("sdkfjslkd;f");
+  console.log(foodItems);
+  for (var food of foodItems) {
+    var active = false;
+    activeFilters.forEach((filter) => {
+      if (food.pies.includes(filter)) {
+        active = true;
+      }
+    });
+
+    if (!active) continue;
+
+    if (food.nutInfo != null) {
+      console.log("WORKS");
       sum.carb += food.nutInfo.carb;
       sum.kj += food.nutInfo.kj;
       sum.satfat += food.nutInfo.satfat;
@@ -86,32 +100,46 @@ function basketMacroSum(foodBasket, activeFilters) {
       sum.sugar += food.nutInfo.sugar;
     }
   }
+  console.log(sum);
   return sum;
 }
 
 function subtractingHealth(macroSum) {
   var minus = 0;
   var ratio = 0;
-  ratio = macroSum.sugar / macroSum.carb;
-  minus = -6 / (2 * ratio - 2.2);
+  console.log(macroSum.sugar);
+  // ratio = macroSum.sugar / macroSum.carb;
+  // minus = -6 / (2 * ratio - 2.2);
 
-  console.log(minus);
+  // console.log(ratio);
   return minus;
 }
 
 // creates an overall health star rating of the cart
-export function overallHealthStar(foodBasket, activeFilters) {
+export function overallHealthStar(foodItems, activeFilters) {
+  // console.log("yahoo");
+  // console.log(foodItems);
   var itemCount = 0;
   var totalStars = 0;
-  var macroSum = basketMacroSum(foodBasket, activeFilters);
-  for (var food of foodBasket.lineItems) {
+  var macroSum = basketMacroSum(foodItems, activeFilters);
+
+  for (var food of foodItems) {
+    var active = false;
+    activeFilters.forEach((filter) => {
+      if (food.pies.includes(filter)) {
+        active = true;
+      }
+    });
+
+    if (!active) continue;
+
     if (food.starrating != 0 && food.starrating != null) {
       totalStars += Number(food.quantity) * Number(food.starrating);
     }
     itemCount += Number(food.quantity);
   }
-  console.log((totalStars / itemCount) * 20);
-  return (totalStars / itemCount) * 20 - subtractingHealth(macroSum);
+  return (totalStars / itemCount) * 20;
+  //return (totalStars / itemCount) * 20 - subtractingHealth(macroSum);
 }
 
 export function processCart(rawBasket) {
@@ -134,8 +162,8 @@ export function processCart(rawBasket) {
         item.AdditionalAttributes.nutritionalinformation === undefined
           ? null
           : JSON.parse(item.AdditionalAttributes?.nutritionalinformation);
-      console.log(item.AdditionalAttributes.piesdepartmentnamesjson);
-      console.log(item.Name + " is food");
+      // console.log(item.AdditionalAttributes.piesdepartmentnamesjson);
+      // console.log(item.Name + " is food");
       foodBasket.lineItems.push(
         new LineItem(
           item.Name,
@@ -158,7 +186,7 @@ export function processCart(rawBasket) {
       );
     } else {
       // adds non-food tiems to food item list
-      console.log(item.Name + " is not food");
+      // console.log(item.Name + " is not food");
       nonFoodBasket.lineItems.push(
         new LineItem(
           item.Name,
@@ -172,16 +200,16 @@ export function processCart(rawBasket) {
     }
   });
 
-  console.log(foodBasket.lineItems);
-  console.log(nonFoodBasket.lineItems);
-  //console.log(basketMacroSum(foodBasket));
-  console.log(
-    "avg health star: " +
-      overallHealthStar(
-        foodBasket,
-        basketMacroSum(foodBasket, ["Fruit & Veg", "Bakery", "Pantry"])
-      )
-  );
+  // console.log(foodBasket.lineItems);
+  // console.log(nonFoodBasket.lineItems);
+  // //console.log(basketMacroSum(foodBasket));
+  // /*console.log(
+  //   "avg health star: " +
+  //     overallHealthStar(
+  //       foodBasket,
+  //       basketMacroSum(foodBasket, ["Fruit & Veg", "Bakery", "Pantry"])
+  //     )
+  // );*/
 
   return new Basket(
     foodBasket.lineItems,
