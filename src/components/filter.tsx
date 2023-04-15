@@ -4,7 +4,7 @@ export default function Filter({display, filter, onClick}: any) {
 
     useEffect(() => {
         if (onClick != null) onClick(filter, true);
-    }, [filter, onClick])
+    }, [])
 
     return (
         <div className="filter" data-filter={filter} data-active="true" onClick={(event) => {

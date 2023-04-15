@@ -44,7 +44,7 @@ export default function Home() {
       .catch((error) => {
         console.error(error);
       });
-  }, [filters]);
+  }, []);
 
   function updateFilters() {
     setFilters(getFilters());
