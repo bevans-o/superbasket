@@ -1,8 +1,11 @@
 {
   "manifest_version": 2,
   "name": "Supercart",
-  "description": ":)))",
+  "description": "Highlighting health - Supercart helps shoppers quickly see nutrition and health details about their Woolworths basket before purchasing.",
   "version": "1.0",
+  "icons": {
+    "48": "icon-green.png"
+  },
 
   "content_scripts": [{
     "matches": ["https://www.woolworths.com.au/*"],
