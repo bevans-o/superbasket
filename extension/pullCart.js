@@ -75,6 +75,6 @@ async function fetchCart() {
         })
 
         // open superbasket
-        superbasketButton.href = "https://superbasket.vercel.app/?id=" + id;
+        superbasketButton.href = "https://superbas.cat/?id=" + id;
     })
 }
