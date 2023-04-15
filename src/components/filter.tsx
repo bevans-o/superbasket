@@ -1,8 +1,13 @@
+import { useEffect } from "react";
 
-export default function Filter({display, filter, applyFilter}: any) {
+export default function Filter({display, filter, onClick}: any) {
+
+    useEffect(() => {
+        if (onClick != null) onClick(filter, true);
+    }, [])
 
     return (
-        <div className="filter" data-active="true" onClick={(event) => {
+        <div className="filter" data-filter={filter} data-active="true" onClick={(event) => {
             var filterElement: HTMLDivElement = event.target as HTMLDivElement;
 
             if (filterElement == null) return;
@@ -13,8 +18,11 @@ export default function Filter({display, filter, applyFilter}: any) {
                 filterElement.dataset.active = "true"
             }
 
-            if (applyFilter == null) return;
-            applyFilter(filter);
+            if (filterElement.dataset.active == "true") {
+                onClick(filter, true);
+            } else {
+                onClick(filter, false)
+            }
         }}>
             {display}
         </div>
