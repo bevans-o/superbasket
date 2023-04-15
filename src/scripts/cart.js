@@ -154,7 +154,7 @@ export function processCart(rawBasket) {
           item.SalePrice,
           item.SapCategories.SapDepartmentName,
           item.SapCategories.SapCategoryName,
-          item.quantity,
+          item.Quantity,
           item.LargeImageFile
         )
       );
@@ -177,7 +177,7 @@ export class Basket {
   constructor(foodItems, nonFoodItems, totalPrice) {
     this.foodItems = foodItems;
     this.nonFoodItems = nonFoodItems;
-    this.totalPrice = totalPrice;
+    this.totalPrice = "$" + totalPrice;
   }
 }
 

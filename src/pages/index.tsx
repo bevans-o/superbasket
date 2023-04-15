@@ -5,6 +5,7 @@ import Sidebar from '@/components/sidebar';
 import Logo from '@/components/logo';
 import Filter from '@/components/filter';
 import Item from '@/components/item';
+import BasketPanel from '@/components/basket';
 
 export default function Home() {
   const [basket, setBasket] = useState<Basket>(new Basket([], []));
@@ -65,7 +66,7 @@ export default function Home() {
         </Sidebar>
       
         <div id="body" className="body">
-          <div className="panel">
+          <BasketPanel total={basket.totalPrice}>
             <div className="column-list--large">
               <div className="items column-list">
                 <h2>Food Items</h2>
@@ -93,7 +94,7 @@ export default function Home() {
             </div>
 
             <div className="panel insights"></div>
-          </div>
+          </BasketPanel>
           
           
           {/*JSON.stringify(basket)*/}
