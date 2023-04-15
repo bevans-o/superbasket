@@ -32,6 +32,10 @@ function isFood(department, category) {
 // pulls the relevant nutritional information from the json file
 function getMacros(nutritionalInformation, quantity){
 
+  if (nutritionalInformation == null){
+    return;
+  }
+
   // index of each macro.
   const kj = 759;
   const carbs = 705;
@@ -74,13 +78,15 @@ function getMacros(nutritionalInformation, quantity){
 function basketMacroSum(foodBasket){
   var sum = new NutritionalInformation([0, 0, 0, 0, 0, 0, 0], 0)
   for (var food of foodBasket.lineItems){
-    sum.carb += food.nutInfo.carb;
-    sum.kj += food.nutInfo.kj;
-    sum.satfat += food.nutInfo.satfat;
-    sum.fat += food.nutInfo.fat;
-    sum.protein += food.nutInfo.protein;
-    sum.sodium += food.nutInfo.sodium;
-    sum.sugar += food.nutInfo.sugar;
+    if (food.nutInfo != null){
+      sum.carb += food.nutInfo.carb;
+      sum.kj += food.nutInfo.kj;
+      sum.satfat += food.nutInfo.satfat;
+      sum.fat += food.nutInfo.fat;
+      sum.protein += food.nutInfo.protein;
+      sum.sodium += food.nutInfo.sodium;
+      sum.sugar += food.nutInfo.sugar;
+    }
    }
 
   return sum;
@@ -88,6 +94,19 @@ function basketMacroSum(foodBasket){
 
 
 // creates an overall health star rating of the cart
+function overallHealthStar(foodBasket){
+  var itemCount = 0;
+  var totalStars = 0;
+
+  for (var food of foodBasket.lineItems){
+    if (food.starrating != 0 && food.starrating != null){
+      totalStars += Number(food.quantity)*Number(food.starrating);
+      itemCount += Number(food.quantity);
+    }
+  }
+
+  return totalStars/itemCount;
+}
 
 export function processCart(rawBasket) {
   var nonFoodBasket = {};
@@ -108,12 +127,12 @@ export function processCart(rawBasket) {
           item.SalePrice,
           item.SapCategories.SapDepartmentName,
           item.SapCategories.SapCategoryName,
-          item.AdditionalAttributes.healthstarrating,
-          item.AdditionalAttributes.allergencontains,
           item.Quantity,
           item.LargeImageFile,
           item.PackageSize,
           nutInfo === null ? null : new NutritionalInformation(getMacros(nutInfo["Attributes"]), parseFloat(item.Quantity)),
+          item.AdditionalAttributes.healthstarrating,
+          item.AdditionalAttributes.allergencontains,
 
         )
       );
@@ -126,8 +145,6 @@ export function processCart(rawBasket) {
           item.SalePrice,
           item.SapCategories.SapDepartmentName,
           item.SapCategories.SapCategoryName,
-          null,
-          null,
           item.quantity,
           item.LargeImageFile
         )
@@ -138,6 +155,8 @@ export function processCart(rawBasket) {
   console.log(foodBasket.lineItems);
   console.log(nonFoodBasket.lineItems);
   console.log(basketMacroSum(foodBasket));
+  console.log("avg health star: " + overallHealthStar(foodBasket));
+  
 
   return new Basket(foodBasket.lineItems, nonFoodBasket.lineItems);
 }
@@ -150,18 +169,18 @@ export class Basket {
 }
 
 export class LineItem {
-  constructor(name, price, deptName, catName, starrating, allergencontains, quantity, image, packagesize, nutInfo) {
+  constructor(name, price, deptName, catName, quantity, image, packagesize, nutInfo, starrating, allergencontains,) {
     this.name = name;
     this.price = price;
     this.deptName = deptName;
     this.catName = catName;
-    this.starrating = starrating;
-    this.allergencontains = allergencontains;
     this.quantity = quantity;
     this.image = image;
     this.packagesize = packagesize;
     this.included = true;
     this.nutInfo = nutInfo;
+    this.starrating = starrating;
+    this.allergencontains = allergencontains;
   }
 }
 
