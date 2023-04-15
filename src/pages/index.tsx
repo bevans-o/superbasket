@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
-import { Basket, LineItem, processCart } from '@/scripts/cart.js'
+import { Basket, LineItem, processCart, overallHealthStar } from '@/scripts/cart.js'
 import { getFilters } from '@/scripts/filters.js'
 import Sidebar from '@/components/sidebar';
 import Logo from '@/components/logo';
@@ -34,7 +34,9 @@ export default function Home() {
     .catch((error) => {
       console.error(error);
     })
-  }, [])
+
+    console.log(overallHealthStar(basket.foodItems, filters))
+  }, [filters])
 
   function updateFilters() {
     setFilters(getFilters());
@@ -58,13 +60,13 @@ export default function Home() {
           <div className='column-list filters'>
             <h2>Filter Items</h2>
             <Filter onClick={updateFilters} display="Fruit & Veg" filter="Fruit & Veg"/>
-            <Filter onClick={updateFilters} display="Meat, Seafood, & Deli" filter="Meat, Seafood, & Deli"/>
+            <Filter onClick={updateFilters} display="Meat, Seafood & Deli" filter="Meat, Seafood & Deli"/>
             <Filter onClick={updateFilters} display="Bakery" filter="Bakery"/>
-            <Filter onClick={updateFilters} display="Dairy, Eggs, & Fridge" filter="Dairy, Eggs, & Fridge"/>
+            <Filter onClick={updateFilters} display="Dairy, Eggs & Fridge" filter="Dairy, Eggs & Fridge"/>
             <Filter onClick={updateFilters} display="Health & Wellness" filter="Health & Wellness"/>
             <Filter onClick={updateFilters} display="Lunch Box" filter="Lunch Box"/>
             <Filter onClick={updateFilters} display="Pantry" filter="Pantry"/>
-            <Filter onClick={updateFilters} display="Snacks & Confectionary" filter="Snacks & Confectionary"/>
+            <Filter onClick={updateFilters} display="Snacks & Confectionery" filter="Snacks & Confectionery"/>
             <Filter onClick={updateFilters} display="Freezer" filter="Freezer"/>
             <Filter onClick={updateFilters} display="Drinks" filter="Drinks"/>
           </div>
@@ -77,8 +79,12 @@ export default function Home() {
                 <h2>Food Items</h2>
 
                 {basket.foodItems.map((item: LineItem, index: number) => {
-                  var active = true;
-                  // if (item.category not in filters... ) active = false;
+                  var active = false;
+                  filters.forEach((filter: any) => {
+                    if (item.pies.includes(filter)) {
+                      active = true;
+                    }
+                  })
                   return (
                   <Item key={index} item={item} active={active}/>
                 )})}
@@ -90,7 +96,6 @@ export default function Home() {
 
                 {basket.nonFoodItems.map((item: LineItem, index: number) => {
                   var active = true;
-                  // if (item.category not in filters... ) active = false;
                   return (
                   <Item key={index} item={item} active={active}/>
                 )})}
