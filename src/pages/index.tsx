@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import { Basket, LineItem, processCart } from '@/scripts/cart.js'
+import { getFilters } from '@/scripts/filters.js'
 import Sidebar from '@/components/sidebar';
 import Logo from '@/components/logo';
 import Filter from '@/components/filter';
@@ -35,6 +36,10 @@ export default function Home() {
     })
   }, [])
 
+  function updateFilters() {
+    setFilters(getFilters());
+  }
+
   return (
     <>
       <Head>
@@ -52,16 +57,16 @@ export default function Home() {
           <Logo/>
           <div className='column-list filters'>
             <h2>Filter Items</h2>
-            <Filter display="Fruit & Veg" filter=""/>
-            <Filter display="Meat, Seafood, & Deli" filter=""/>
-            <Filter display="Bakery" filter=""/>
-            <Filter display="Dairy, Eggs, & Fridge" filter=""/>
-            <Filter display="Health & Wellness" filter=""/>
-            <Filter display="Lunch Box" filter=""/>
-            <Filter display="Pantry" filter=""/>
-            <Filter display="Snacks & Confectionary" filter=""/>
-            <Filter display="Freezer" filter=""/>
-            <Filter display="Drinks" filter=""/>
+            <Filter onClick={updateFilters} display="Fruit & Veg" filter="Fruit & Veg"/>
+            <Filter onClick={updateFilters} display="Meat, Seafood, & Deli" filter="Meat, Seafood, & Deli"/>
+            <Filter onClick={updateFilters} display="Bakery" filter="Bakery"/>
+            <Filter onClick={updateFilters} display="Dairy, Eggs, & Fridge" filter="Dairy, Eggs, & Fridge"/>
+            <Filter onClick={updateFilters} display="Health & Wellness" filter="Health & Wellness"/>
+            <Filter onClick={updateFilters} display="Lunch Box" filter="Lunch Box"/>
+            <Filter onClick={updateFilters} display="Pantry" filter="Pantry"/>
+            <Filter onClick={updateFilters} display="Snacks & Confectionary" filter="Snacks & Confectionary"/>
+            <Filter onClick={updateFilters} display="Freezer" filter="Freezer"/>
+            <Filter onClick={updateFilters} display="Drinks" filter="Drinks"/>
           </div>
         </Sidebar>
       
