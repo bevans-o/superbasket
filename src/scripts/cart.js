@@ -145,7 +145,7 @@ export function processCart(rawBasket) {
           item.SalePrice,
           item.SapCategories.SapDepartmentName,
           item.SapCategories.SapCategoryName,
-          item.quantity,
+          item.Quantity,
           item.LargeImageFile
         )
       );
