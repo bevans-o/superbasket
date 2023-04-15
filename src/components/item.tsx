@@ -11,7 +11,7 @@ export default function Item({item, active}: any) {
     return (
         <div className="item panel" data-selected={active ? "true" : "false"}>
             <div className="item__image">
-                <img src={item.image}></img>
+                <img alt={item.name} src={item.image}></img>
             </div>
             <h3 className="item__name">{item.name}</h3>
             <div className="item__price">${item.price.toFixed(2)}</div>
